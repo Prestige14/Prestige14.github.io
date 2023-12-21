@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KMap Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input[type="text"] {
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+        table {
+            margin: 0 auto;
+            margin-top: 50px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #666;
+            padding: 10px;
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 50px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            text-align: center;
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>KMap Solver</h1>
+    <p>Enter your solution:</p>
+    <input type="text" id="userSolution" placeholder="ex: A B+A B'">
+    <button onclick="displayKMap()">Display KMap</button>
+    <table id="kmap">
+        <tr>
+            <td></td>
+            <td>B'</td>
+            <td>B</td>
+        </tr>
+        <tr>
+            <td>A'</td>
+            <td id="00">0</td>
+            <td id="01">0</td>
+        </tr>
+        <tr>
+            <td>A</td>
+            <td id="10">0</td>
+            <td id="11">0</td>
+        </tr>
+    </table>
+    <p id="simplified"></p>
+
+    <script>
+        function displayKMap() {
+            // Reset the KMap
+            document.getElementById("00").innerHTML = "0";
+            document.getElementById("01").innerHTML = "0";
+            document.getElementById("10").innerHTML = "0";
+            document.getElementById("11").innerHTML = "0";
+
+            var userSolution = document.getElementById("userSolution").value;
+            var terms = userSolution.split("+");
+            var termCount = {};
+            var count = { "A'": 0, "B'": 0, "A": 0, "B": 0};
+
+            for (var i = 0; i < terms.length; i++) {
+                var term = terms[i];
+                termCount[term] = (termCount[term] || 0) + 1;
+                if (term == "A B") {
+                    document.getElementById("11").innerHTML = "1";
+                    count["A"]++;
+                    count["B"]++;
+                } else if (term == "A B'") {
+                    document.getElementById("10").innerHTML = "1";
+                    count["A"]++;
+                    count["B'"]++;
+                } else if (term == "A' B") {
+                    document.getElementById("01").innerHTML = "1";
+                    count["A'"]++;
+                    count["B"]++;
+                } else if (term == "A' B'") {
+                    document.getElementById("00").innerHTML = "1";
+                    count["A'"]++;
+                    count["B'"]++;
+                }
+            }
+            var simplifiedSolution = "";
+            for (var key in count) {
+                if (count[key] > 1) {
+                    simplifiedSolution += simplifiedSolution ? " + " + key : key;
+                }
+            }
+            document.getElementById("simplified").innerHTML = "Simplified: " + (simplifiedSolution || "0");
+        }
+    </script>
+</body>
+</html>

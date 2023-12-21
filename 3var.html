@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KMap Solver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input[type="text"] {
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+        table {
+            margin: 0 auto;
+            margin-top: 50px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #666;
+            padding: 10px;
+            text-align: center;
+        }
+        button {
+            display: block;
+            margin: 50px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            text-align: center;
+            font-size: 20px;
+            color: #333;
+        }    </style>
+</head>
+<body>
+    <h1>KMap Solver</h1>
+    <p>Enter your solution:</p>
+    <input type="text" id="userSolution" placeholder="Enter solution">
+    <button onclick="displayKMap()">Display KMap</button>
+    <table id="kmap">
+        <tr>
+            <td></td>
+            <td>B'C'</td>
+            <td>B'C</td>
+            <td>BC</td>
+            <td>BC'</td>
+        </tr>
+        <tr>
+            <td>A'</td>
+            <td id="000">0</td>
+            <td id="001">0</td>
+            <td id="011">0</td>
+            <td id="010">0</td>
+        </tr>
+        <tr>
+            <td>A</td>
+            <td id="100">0</td>
+            <td id="101">0</td>
+            <td id="111">0</td>
+            <td id="110">0</td>
+        </tr>
+    </table>
+    <p id="simplified"></p>
+
+    <script>
+        
+        function displayKMap() {
+            // Reset the KMap
+            var ids = ["000", "001", "011", "010", "100", "101", "111", "110"];
+            for (var i = 0; i < ids.length; i++) {
+                document.getElementById(ids[i]).innerHTML = "0";
+            }
+
+            var userSolution = document.getElementById("userSolution").value;
+            var terms = userSolution.split("+");
+            var termCount = {};
+            var count = { "A'": 0, "B' C'": 0, "A": 0, "B C": 0, "B C'": 0, "B' C": 0 };
+            for (var i = 0; i < terms.length; i++) {
+                var term = terms[i];
+                termCount[term] = (termCount[term] || 0) + 1;
+                if (term == "A B C") {
+                    document.getElementById("111").innerHTML = "1";
+                    count["A"]++;
+                    count["B C"]++;
+                } else if (term == "A B C'") {
+                    document.getElementById("110").innerHTML = "1";
+                    count["A"]++;
+                    count["B C'"]++;
+                } else if (term == "A B' C") {
+                    document.getElementById("101").innerHTML = "1";
+                    count["A"]++;
+                    count["B' C"]++;
+                } else if (term == "A B' C'") {
+                    document.getElementById("100").innerHTML = "1";
+                    count["A"]++;
+                    count["B' C'"]++;
+                } else if (term == "A' B C") {
+                    document.getElementById("011").innerHTML = "1";
+                    count["A'"]++;
+                    count["B C"]++;
+                } else if (term == "A' B C'") {
+                    document.getElementById("010").innerHTML = "1";
+                    count["A'"]++;
+                    count["B C'"]++;
+                } else if (term == "A' B' C") {
+                    document.getElementById("001").innerHTML = "1";
+                    count["A'"]++;
+                    count["B' C"]++;
+                } else if (term == "A' B' C'") {
+                    document.getElementById("000").innerHTML = "1";
+                    count["A'"]++;
+                    count["B' C'"]++;
+                }
+            }
+            var simplifiedSolution = "";
+            for (var key in count) {
+                if (count[key] > 1) {
+                    simplifiedSolution += simplifiedSolution ? " + " + key : key;
+                }
+            }
+            document.getElementById("simplified").innerHTML = "Simplified: " + (simplifiedSolution || "0");
+        }
+    </script>
+</body>
+</html>
